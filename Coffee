@@ -1,0 +1,46 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int k = sc.nextInt();
+        int q = sc.nextInt();
+
+        int[] diff = new int[200002];
+
+        // Mark ranges
+        for (int i = 0; i < n; i++) {
+            int l = sc.nextInt();
+            int r = sc.nextInt();
+
+            diff[l]++;
+            diff[r + 1]--;
+        }
+
+        // Find how many intervals cover each point
+        int[] cover = new int[200002];
+        for (int i = 1; i <= 200000; i++) {
+            cover[i] = cover[i - 1] + diff[i];
+        }
+
+        // Prefix count of points covered at least k times
+        int[] prefix = new int[200002];
+        for (int i = 1; i <= 200000; i++) {
+            prefix[i] = prefix[i - 1];
+
+            if (cover[i] >= k) {
+                prefix[i]++;
+            }
+        }
+
+        // Answer queries
+        while (q-- > 0) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+
+            System.out.println(prefix[b] - prefix[a - 1]);
+        }
+    }
+}
