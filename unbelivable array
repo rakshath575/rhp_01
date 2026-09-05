@@ -1,0 +1,96 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static class FastScanner {
+        BufferedReader br;
+        StringTokenizer st;
+
+        FastScanner() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        String next() throws IOException {
+            while (st == null || !st.hasMoreElements()) {
+                st = new StringTokenizer(br.readLine());
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() throws IOException {
+            return Integer.parseInt(next());
+        }
+    }
+
+    static int[] parent;
+    static int[] value;
+
+    static int find(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x]);
+    }
+
+    public static void main(String[] args) throws Exception {
+        FastScanner fs = new FastScanner();
+        StringBuilder sb = new StringBuilder();
+
+        int T = fs.nextInt();
+
+        for (int tc = 1; tc <= T; tc++) {
+
+            int n = fs.nextInt();
+            int q = fs.nextInt();
+
+            parent = new int[n + 1];
+            value = new int[n + 1];
+
+            int[] rep = new int[100001];
+            Arrays.fill(rep, -1);
+
+            for (int i = 1; i <= n; i++) {
+                int x = fs.nextInt();
+
+                parent[i] = i;
+
+                if (rep[x] == -1) {
+                    rep[x] = i;
+                    value[i] = x;
+                } else {
+                    parent[i] = rep[x];
+                }
+            }
+
+            sb.append("Case ").append(tc).append(":\n");
+
+            while (q-- > 0) {
+                int type = fs.nextInt();
+
+                if (type == 1) {
+                    int x = fs.nextInt();
+                    int y = fs.nextInt();
+
+                    if (x == y || rep[x] == -1) continue;
+
+                    int rx = find(rep[x]);
+
+                    if (rep[y] == -1) {
+                        value[rx] = y;
+                        rep[y] = rx;
+                    } else {
+                        int ry = find(rep[y]);
+                        parent[rx] = ry;
+                    }
+
+                    rep[x] = -1;
+
+                } else {
+                    int idx = fs.nextInt();
+                    sb.append(value[find(idx)]).append('\n');
+                }
+            }
+        }
+
+        System.out.print(sb);
+    }
+}
